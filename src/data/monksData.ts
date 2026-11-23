@@ -422,7 +422,7 @@ export const CONTACT_SERVICES = [
   'Real-Time Brands',
   'Media Acceleration',
   'Marketing Orchestration',
-  'AI Transformation',
+  'AI Transform & Web Services',
   'Technology & Platforms',
   'Brand & Experience Design',
 ];

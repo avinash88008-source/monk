@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-control-regex
 // Supabase Edge Function: submit-contact
 // Securely validates IWON- website inquiries and creates pages in the Notion CRM database.
 // Secrets required (set via `supabase secrets set`):
@@ -135,13 +136,13 @@ function jsonResponse(
   });
 }
 
+const CONTROL_CHARS_PRESERVE_NEWLINES = new RegExp('[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]', 'g');
+const CONTROL_CHARS_ALL = new RegExp('[\\u0000-\\u001F\\u007F]', 'g');
+
 function sanitizeText(value: unknown, preserveNewlines = false): string {
   if (typeof value !== 'string') return '';
-  const withoutControl = value.replace(
-    preserveNewlines ? /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g : /[\u0000-\u001F\u007F]/g,
-    ' '
-  );
-  return withoutControl.trim();
+  const regex = preserveNewlines ? CONTROL_CHARS_PRESERVE_NEWLINES : CONTROL_CHARS_ALL;
+  return value.replace(regex, ' ').trim();
 }
 
 function validatePayload(raw: ContactRequestPayload): {
@@ -765,16 +766,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
   }
 
   const notionToken = Deno.env.get('NOTION_TOKEN')?.trim();
-  const databaseId = Deno.env.get('NOTION_DATABASE_ID')?.trim();
+  const databaseId = Deno.env.get('NOTION_DATABASE_ID')?.trim() || '4219d202bdc08061a018f501694ab974';
 
-  if (!notionToken || !databaseId) {
-    console.error('submit-contact configuration error: missing NOTION_TOKEN or NOTION_DATABASE_ID secret.');
+  if (!notionToken) {
+    console.error('submit-contact configuration error: missing NOTION_TOKEN secret.');
     return jsonResponse(
       500,
       {
         ok: false,
         code: 'SERVER_CONFIG_ERROR',
-        error: 'Contact service is not configured yet. Please contact the site administrator.',
+        error: 'Contact service is not configured yet (missing NOTION_TOKEN). Please contact the site administrator.',
       },
       corsHeaders
     );
