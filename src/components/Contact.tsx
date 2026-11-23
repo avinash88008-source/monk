@@ -9,7 +9,11 @@ import {
   IWON_TEAM_PORTRAITS,
   PARTNER_PLACEHOLDER_MARKS,
 } from '../data/monksData';
-import { ContactSubmissionResult, submitContactInquiry } from '../services/contactService';
+import {
+  ContactSubmissionError,
+  ContactSubmissionResult,
+  submitContactInquiry,
+} from '../services/contactService';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,11 +21,23 @@ interface FormState {
   firstName: string;
   lastName: string;
   email: string;
+  company: string;
   service: string;
   companySize: string;
   location: string;
   message: string;
   acceptedPrivacy: boolean;
+  website: string; // Honeypot field
+}
+
+interface SubmittedSummary {
+  firstName: string;
+  lastName: string;
+  email: string;
+  company: string;
+  service: string;
+  companySize: string;
+  location: string;
 }
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
@@ -30,11 +46,13 @@ const INITIAL_FORM: FormState = {
   firstName: '',
   lastName: '',
   email: '',
+  company: '',
   service: '',
   companySize: '',
   location: '',
   message: '',
   acceptedPrivacy: false,
+  website: '',
 };
 
 const MAX_MESSAGE_LEN = 500;
@@ -119,6 +137,7 @@ export const Contact: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<ContactSubmissionResult | null>(null);
+  const [submittedSummary, setSubmittedSummary] = useState<SubmittedSummary | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPrivacySummary, setShowPrivacySummary] = useState(false);
 
@@ -213,14 +232,29 @@ export const Contact: React.FC = () => {
 
   const validate = (): FormErrors => {
     const nextErrors: FormErrors = {};
-    if (!form.firstName.trim()) nextErrors.firstName = 'First name is required.';
-    if (!form.lastName.trim()) nextErrors.lastName = 'Last name is required.';
+    if (!form.firstName.trim()) {
+      nextErrors.firstName = 'First name is required.';
+    } else if (form.firstName.trim().length > 80) {
+      nextErrors.firstName = 'First name must be 80 characters or fewer.';
+    }
+
+    if (!form.lastName.trim()) {
+      nextErrors.lastName = 'Last name is required.';
+    } else if (form.lastName.trim().length > 80) {
+      nextErrors.lastName = 'Last name must be 80 characters or fewer.';
+    }
 
     const trimmedEmail = form.email.trim();
     if (!trimmedEmail) {
       nextErrors.email = 'Email address is required.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    } else if (trimmedEmail.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(trimmedEmail)) {
       nextErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (!form.company.trim()) {
+      nextErrors.company = 'Company name is required.';
+    } else if (form.company.trim().length > 120) {
+      nextErrors.company = 'Company name must be 120 characters or fewer.';
     }
 
     if (!form.service) nextErrors.service = 'Please select a service.';
@@ -231,12 +265,28 @@ export const Contact: React.FC = () => {
       nextErrors.message = 'Please share a brief overview of your project.';
     } else if (form.message.trim().length < 10) {
       nextErrors.message = 'Please provide at least 10 characters so our team has context.';
+    } else if (form.message.trim().length > MAX_MESSAGE_LEN) {
+      nextErrors.message = `Project message must be ${MAX_MESSAGE_LEN} characters or fewer.`;
     }
 
     if (!form.acceptedPrivacy) {
       nextErrors.acceptedPrivacy = 'Please accept the Privacy Policy to continue.';
     }
     return nextErrors;
+  };
+
+  const mapServerFieldErrors = (serverErrors?: Record<string, string>): FormErrors => {
+    if (!serverErrors) return {};
+    const mapped: FormErrors = {};
+    if (serverErrors.first_name) mapped.firstName = serverErrors.first_name;
+    if (serverErrors.last_name) mapped.lastName = serverErrors.last_name;
+    if (serverErrors.email) mapped.email = serverErrors.email;
+    if (serverErrors.company) mapped.company = serverErrors.company;
+    if (serverErrors.service_required) mapped.service = serverErrors.service_required;
+    if (serverErrors.company_size) mapped.companySize = serverErrors.company_size;
+    if (serverErrors.location) mapped.location = serverErrors.location;
+    if (serverErrors.message) mapped.message = serverErrors.message;
+    return mapped;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -249,19 +299,25 @@ export const Contact: React.FC = () => {
       return;
     }
 
-    const signature = JSON.stringify({
+    const trimmedSnapshot: SubmittedSummary = {
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
-      email: form.email.trim().toLowerCase(),
+      email: form.email.trim(),
+      company: form.company.trim(),
       service: form.service,
       companySize: form.companySize,
       location: form.location,
+    };
+
+    const signature = JSON.stringify({
+      ...trimmedSnapshot,
+      email: trimmedSnapshot.email.toLowerCase(),
       message: form.message.trim(),
     });
 
     if (lastSubmittedSignatureRef.current === signature) {
       setSubmitError(
-        'This exact inquiry was already recorded in this session. Edit your message or reset to submit a new request.'
+        'This exact inquiry was already submitted in this session. Edit your message or send a new inquiry.'
       );
       return;
     }
@@ -271,20 +327,30 @@ export const Contact: React.FC = () => {
 
     try {
       const result = await submitContactInquiry({
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        email: form.email.trim(),
-        service: form.service,
-        companySize: form.companySize,
-        location: form.location,
+        first_name: trimmedSnapshot.firstName,
+        last_name: trimmedSnapshot.lastName,
+        email: trimmedSnapshot.email,
+        company: trimmedSnapshot.company,
+        service_required: trimmedSnapshot.service,
+        company_size: trimmedSnapshot.companySize,
+        location: trimmedSnapshot.location,
         message: form.message.trim(),
-        acceptedPrivacy: form.acceptedPrivacy,
-        submittedAt: new Date().toISOString(),
+        website: form.website,
       });
 
       lastSubmittedSignatureRef.current = signature;
+      setSubmittedSummary(trimmedSnapshot);
       setSubmissionResult(result);
+      // Reset the form only after confirmed successful submission
+      setForm(INITIAL_FORM);
+      setErrors({});
     } catch (err) {
+      if (err instanceof ContactSubmissionError && err.fieldErrors) {
+        const mapped = mapServerFieldErrors(err.fieldErrors);
+        if (Object.keys(mapped).length > 0) {
+          setErrors(mapped);
+        }
+      }
       setSubmitError(
         err instanceof Error
           ? err.message
@@ -299,8 +365,8 @@ export const Contact: React.FC = () => {
     setForm(INITIAL_FORM);
     setErrors({});
     setSubmissionResult(null);
+    setSubmittedSummary(null);
     setSubmitError(null);
-    lastSubmittedSignatureRef.current = null;
   };
 
   const handleButtonHover = (entering: boolean) => {
@@ -446,43 +512,43 @@ export const Contact: React.FC = () => {
                     <div className="flex items-start gap-3">
                       <CheckCircle2 size={22} className="text-[#141413] shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-[18px] font-bold text-[#141413]">
-                          {submissionResult.mode === 'demo'
-                            ? 'Inquiry Validated (Demo Mode)'
-                            : 'Inquiry Received'}
-                        </p>
+                        <p className="text-[18px] font-bold text-[#141413]">Inquiry Received</p>
                         <p className="text-[13px] font-medium text-[#6F6C66] tabular-nums mt-0.5">
                           Reference: {submissionResult.referenceId}
                         </p>
                       </div>
                     </div>
 
-                    <div
-                      className={`rounded-xl p-4 text-[13px] leading-relaxed flex items-start gap-2.5 ${
-                        submissionResult.mode === 'demo'
-                          ? 'bg-[#FAF9F6] border border-[#141413]/15 text-[#2D2D2D]'
-                          : 'bg-[#ECFCCB] border border-[#65A30D]/30 text-[#141413]'
-                      }`}
-                    >
+                    <div className="rounded-xl p-4 text-[13px] leading-relaxed flex items-start gap-2.5 bg-[#ECFCCB] border border-[#65A30D]/30 text-[#141413]">
                       <Info size={16} className="shrink-0 mt-0.5 text-[#141413]" />
                       <span>{submissionResult.notice}</span>
                     </div>
 
-                    <div className="border-t border-[#141413]/10 pt-4 text-[13px] text-[#4A4844] grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <p>
-                        <strong className="text-[#141413]">Contact:</strong> {form.firstName}{' '}
-                        {form.lastName} ({form.email})
-                      </p>
-                      <p>
-                        <strong className="text-[#141413]">Service:</strong> {form.service}
-                      </p>
-                      <p>
-                        <strong className="text-[#141413]">Company Size:</strong> {form.companySize}
-                      </p>
-                      <p>
-                        <strong className="text-[#141413]">Location:</strong> {form.location}
-                      </p>
-                    </div>
+                    {submittedSummary && (
+                      <div className="border-t border-[#141413]/10 pt-4 text-[13px] text-[#4A4844] grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <p>
+                          <strong className="text-[#141413]">Contact:</strong>{' '}
+                          {submittedSummary.firstName} {submittedSummary.lastName} (
+                          {submittedSummary.email})
+                        </p>
+                        <p>
+                          <strong className="text-[#141413]">Company:</strong>{' '}
+                          {submittedSummary.company}
+                        </p>
+                        <p>
+                          <strong className="text-[#141413]">Service:</strong>{' '}
+                          {submittedSummary.service}
+                        </p>
+                        <p>
+                          <strong className="text-[#141413]">Company Size:</strong>{' '}
+                          {submittedSummary.companySize}
+                        </p>
+                        <p>
+                          <strong className="text-[#141413]">Location:</strong>{' '}
+                          {submittedSummary.location}
+                        </p>
+                      </div>
+                    )}
 
                     <div className="pt-2">
                       <button
@@ -495,7 +561,23 @@ export const Contact: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} noValidate className="contact-form-grid space-y-5">
+                  <form onSubmit={handleSubmit} noValidate className="contact-form-grid space-y-5 relative">
+                    {/* Honeypot field for spam protection (hidden from human visitors & assistive tech) */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute -left-[9999px] w-px h-px overflow-hidden opacity-0 pointer-events-none"
+                    >
+                      <label htmlFor="iwon-website">Website</label>
+                      <input
+                        id="iwon-website"
+                        name="website"
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={form.website}
+                        onChange={(e) => updateField('website', e.target.value)}
+                      />
+                    </div>
                     {/* Row 1: First Name & Last Name */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="contact-field-stagger">
@@ -553,32 +635,61 @@ export const Contact: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Row 2: Email Address */}
-                    <div className="contact-field-stagger">
-                      <label
-                        htmlFor="iwon-email"
-                        className="block text-[13px] font-semibold text-[#141413] mb-1.5"
-                      >
-                        Email Address *
-                      </label>
-                      <input
-                        id="iwon-email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        value={form.email}
-                        onChange={(e) => updateField('email', e.target.value)}
-                        placeholder="jordan@company.com"
-                        aria-invalid={Boolean(errors.email)}
-                        className={`w-full bg-white text-[#141413] placeholder:text-[#6F6C66]/70 rounded-xl px-4 py-3.5 text-[15px] border transition-shadow focus:outline-none focus:ring-2 focus:ring-[#141413] ${
-                          errors.email ? 'border-[#B91C1C]' : 'border-transparent'
-                        }`}
-                      />
-                      {errors.email && (
-                        <p role="alert" className="mt-1.5 text-[12px] font-semibold text-[#991B1B]">
-                          {errors.email}
-                        </p>
-                      )}
+                    {/* Row 2: Email Address & Company */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="contact-field-stagger">
+                        <label
+                          htmlFor="iwon-email"
+                          className="block text-[13px] font-semibold text-[#141413] mb-1.5"
+                        >
+                          Email Address *
+                        </label>
+                        <input
+                          id="iwon-email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          value={form.email}
+                          onChange={(e) => updateField('email', e.target.value)}
+                          placeholder="jordan@company.com"
+                          aria-invalid={Boolean(errors.email)}
+                          className={`w-full bg-white text-[#141413] placeholder:text-[#6F6C66]/70 rounded-xl px-4 py-3.5 text-[15px] border transition-shadow focus:outline-none focus:ring-2 focus:ring-[#141413] ${
+                            errors.email ? 'border-[#B91C1C]' : 'border-transparent'
+                          }`}
+                        />
+                        {errors.email && (
+                          <p role="alert" className="mt-1.5 text-[12px] font-semibold text-[#991B1B]">
+                            {errors.email}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="contact-field-stagger">
+                        <label
+                          htmlFor="iwon-company"
+                          className="block text-[13px] font-semibold text-[#141413] mb-1.5"
+                        >
+                          Company *
+                        </label>
+                        <input
+                          id="iwon-company"
+                          name="company"
+                          type="text"
+                          autoComplete="organization"
+                          value={form.company}
+                          onChange={(e) => updateField('company', e.target.value)}
+                          placeholder="Northstar Studio"
+                          aria-invalid={Boolean(errors.company)}
+                          className={`w-full bg-white text-[#141413] placeholder:text-[#6F6C66]/70 rounded-xl px-4 py-3.5 text-[15px] border transition-shadow focus:outline-none focus:ring-2 focus:ring-[#141413] ${
+                            errors.company ? 'border-[#B91C1C]' : 'border-transparent'
+                          }`}
+                        />
+                        {errors.company && (
+                          <p role="alert" className="mt-1.5 text-[12px] font-semibold text-[#991B1B]">
+                            {errors.company}
+                          </p>
+                        )}
+                      </div>
                     </div>
 
                     {/* Row 3: Service Required & Company Size */}
@@ -767,9 +878,8 @@ export const Contact: React.FC = () => {
                       </label>
                       {showPrivacySummary && (
                         <p className="mt-2 ml-7 p-3 rounded-lg bg-white/75 text-[12px] leading-relaxed text-[#141413]">
-                          IWON- collects only the details you enter to scope your project inquiry.
-                          No data is sold to third parties. In demo mode, submissions stay in your
-                          browser session only.
+                          IWON- collects only the project details you enter so our team can scope
+                          your inquiry and follow up. No data is sold to third parties.
                         </p>
                       )}
                       {errors.acceptedPrivacy && (

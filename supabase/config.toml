@@ -1,0 +1,8 @@
+# Supabase CLI configuration for IWON- Edge Functions
+# Note: Do not store secrets in this file. Use `supabase secrets set` instead.
+
+[functions.submit-contact]
+# Public contact form endpoint called by unauthenticated website visitors.
+# CORS allowlist, input validation, honeypot filtering, and rate limiting
+# are enforced inside supabase/functions/submit-contact/index.ts.
+verify_jwt = false
