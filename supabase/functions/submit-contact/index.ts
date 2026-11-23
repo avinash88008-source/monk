@@ -70,7 +70,7 @@ function isLocalDevOrigin(origin: string): boolean {
 }
 
 function isPreviewOrigin(origin: string): boolean {
-  return /^https:\/\/[a-z0-9-]+\.run\.app$/i.test(origin);
+  return /^https:\/\/[a-z0-9-_.]+\.(run\.app|vercel\.app)$/i.test(origin);
 }
 
 function resolveCorsOrigin(requestOrigin: string | null): {
@@ -90,13 +90,13 @@ function resolveCorsOrigin(requestOrigin: string | null): {
       return { allowed: true, allowOriginHeader: normalizedOrigin };
     }
     const allowLocal = (Deno.env.get('ALLOW_LOCAL_DEV_ORIGINS') ?? 'true').toLowerCase() !== 'false';
-    if (allowLocal && isLocalDevOrigin(normalizedOrigin)) {
+    if (allowLocal && (isLocalDevOrigin(normalizedOrigin) || isPreviewOrigin(normalizedOrigin))) {
       return { allowed: true, allowOriginHeader: normalizedOrigin };
     }
     return { allowed: false, allowOriginHeader: null };
   }
 
-  // Fallback before ALLOWED_ORIGINS is explicitly set: permit local dev & Cloud Run preview origins only
+  // Fallback before ALLOWED_ORIGINS is explicitly set: permit local dev & preview origins only
   if (isLocalDevOrigin(normalizedOrigin) || isPreviewOrigin(normalizedOrigin)) {
     return { allowed: true, allowOriginHeader: normalizedOrigin };
   }
