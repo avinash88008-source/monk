@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({
             className="mb-6 px-4 py-2.5 rounded-lg bg-[#2A2825] text-[#EAE8E4] text-[13px] inline-flex items-center gap-2"
           >
             <Check size={14} className="text-[#BCFFEF]" />
-            <span>{policyToast} — Monks Global Governance &amp; Compliance</span>
+            <span>{policyToast} — IWON- Global Governance &amp; Compliance</span>
           </div>
         )}
 
@@ -128,17 +128,17 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               {[
-                { label: 'TikTok', mark: '♪', href: 'https://www.tiktok.com/@monks' },
-                { label: 'X', mark: '𝕏', href: 'https://x.com/monks' },
-                { label: 'LinkedIn', mark: 'in', href: 'https://www.linkedin.com/company/monks' },
-                { label: 'Instagram', mark: '◎', href: 'https://www.instagram.com/monks' },
+                { label: 'TikTok', mark: '♪', href: 'https://www.tiktok.com/' },
+                { label: 'X', mark: '𝕏', href: 'https://x.com/' },
+                { label: 'LinkedIn', mark: 'in', href: 'https://www.linkedin.com/' },
+                { label: 'Instagram', mark: '◎', href: 'https://www.instagram.com/' },
               ].map((soc) => (
                 <a
                   key={soc.label}
                   href={soc.href}
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={`Follow Monks on ${soc.label}`}
+                  aria-label={`Follow IWON- on ${soc.label}`}
                   className="w-9 h-9 rounded-full border border-[#EAE8E4]/25 hover:border-[#EAE8E4] hover:bg-[#EAE8E4]/10 flex items-center justify-center text-[13px] transition-colors"
                 >
                   {soc.mark}
@@ -170,7 +170,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex items-center gap-4 text-[13px] text-[#EAE8E4]/75">
             <span>Copyright 2026</span>
             <span className="text-[20px] font-extrabold tracking-[-0.04em] text-[#EAE8E4]">
-              .monks
+              IWON-
             </span>
           </div>
         </div>

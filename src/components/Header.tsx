@@ -114,9 +114,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentLanguage }) =
               handleNavClick('#hero');
             }}
             className="text-[24px] md:text-[26px] font-extrabold tracking-[-0.04em] leading-none whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4"
-            aria-label="Monks home"
+            aria-label="IWON- home"
           >
-            .monks
+            IWON-
           </a>
 
           <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-7">
@@ -225,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentLanguage }) =
           className="fixed inset-0 z-50 bg-[#191715] text-[#EAE8E4] flex flex-col overflow-y-auto"
         >
           <div className="px-5 h-16 flex items-center justify-between border-b border-[#EAE8E4]/10 shrink-0">
-            <span className="text-[24px] font-extrabold tracking-[-0.04em]">.monks</span>
+            <span className="text-[24px] font-extrabold tracking-[-0.04em]">IWON-</span>
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
@@ -292,7 +292,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentLanguage }) =
           </div>
 
           <div className="p-5 border-t border-[#EAE8E4]/10 text-[12px] text-[#EAE8E4]/60 flex items-center justify-between">
-            <span>An S4 Capital Company</span>
+            <span>IWON- Global</span>
             <span>{currentLanguage}</span>
           </div>
         </div>

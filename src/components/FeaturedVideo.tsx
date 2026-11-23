@@ -158,21 +158,21 @@ export const FeaturedVideo: React.FC = () => {
           className="pointer-events-none select-none absolute inset-x-0 top-1/2 -translate-y-1/2 -mt-12 flex items-center overflow-hidden opacity-90"
         >
           <div className="animate-monks-marquee monks-marquee-outline font-monks-extended text-[125px] md:text-[210px] leading-none whitespace-nowrap">
-            <span>meet the monk&nbsp;meet the monk&nbsp;meet the monk&nbsp;</span>
-            <span>meet the monk&nbsp;meet the monk&nbsp;meet the monk&nbsp;</span>
+            <span>meet iwon-&nbsp;meet iwon-&nbsp;meet iwon-&nbsp;</span>
+            <span>meet iwon-&nbsp;meet iwon-&nbsp;meet iwon-&nbsp;</span>
           </div>
         </div>
 
-        {/* Foreground "m [O-Video] nk" Lockup */}
+        {/* Foreground "iw [O-Video] n-" Lockup */}
         <div className="relative z-10 max-w-[1440px] mx-auto px-5 md:px-10">
           <div className="flex items-center justify-center gap-4 sm:gap-8 md:gap-10">
-            {/* Left 'm' + Meet Attribution anchored beneath */}
+            {/* Left 'iw' + Meet Attribution anchored beneath */}
             <div className="relative flex items-end h-[120px] sm:h-[185px] md:h-[220px]">
               <span
                 aria-hidden="true"
-                className="font-monks-extended text-[120px] sm:text-[185px] md:text-[240px] leading-[0.82] text-[#2D2D2D] select-none"
+                className="font-monks-extended text-[110px] sm:text-[175px] md:text-[225px] leading-[0.82] text-[#2D2D2D] select-none"
               >
-                m
+                iw
               </span>
 
               <div className="absolute top-full left-0 mt-5 md:mt-6 whitespace-nowrap">
@@ -198,7 +198,7 @@ export const FeaturedVideo: React.FC = () => {
                   Sir Martin Sorrell
                 </p>
                 <p className="text-[14px] md:text-[15px] text-[#2D2D2D]/85">
-                  S4Capital Executive Chairman
+                  Executive Chairman · Guest Feature
                 </p>
               </div>
             </div>
@@ -233,13 +233,13 @@ export const FeaturedVideo: React.FC = () => {
               </div>
             </button>
 
-            {/* Right 'nk' */}
+            {/* Right 'n-' */}
             <div className="flex items-end h-[120px] sm:h-[185px] md:h-[220px]">
               <span
                 aria-hidden="true"
-                className="font-monks-extended text-[120px] sm:text-[185px] md:text-[240px] leading-[0.82] text-[#2D2D2D] select-none"
+                className="font-monks-extended text-[110px] sm:text-[175px] md:text-[225px] leading-[0.82] text-[#2D2D2D] select-none"
               >
-                nk
+                n-
               </span>
             </div>
           </div>

@@ -142,12 +142,12 @@ export const Agents: React.FC<AgentsProps> = ({ onExploreMonksFlow }) => {
           <div className="lg:col-span-9 max-w-[780px]">
             <h2 className="agents-reveal font-monks-extended text-[clamp(2rem,3.9vw,3.35rem)] leading-[1.08] tracking-[-0.03em] [text-wrap:balance]">
               Your always-on agents for last-mile intelligence — rapid, real, and{' '}
-              <span className="text-[#78756E]">powered by monks.flow</span>
+              <span className="text-[#78756E]">powered by IWON- Flow</span>
             </h2>
 
             <div className="agents-reveal mt-9">
               <TwinButton
-                label="Explore Monks.Flow"
+                label="Explore IWON- Flow"
                 variant="dark"
                 size="md"
                 onClick={onExploreMonksFlow}
@@ -195,7 +195,7 @@ export const Agents: React.FC<AgentsProps> = ({ onExploreMonksFlow }) => {
           {!hasStarted && (
             <img
               src={VIDEO_ASSETS.monksFlowManifesto.posterUrl}
-              alt="Monks.Flow brand manifesto video poster"
+              alt="IWON- Flow brand manifesto video poster"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             />
           )}

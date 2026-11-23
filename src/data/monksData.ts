@@ -8,6 +8,12 @@ import aeoGeoImg from '../assets/images/expertise-aeo-geo.webp';
 import ces2026Img from '../assets/images/expertise-ces-2026.webp';
 import heroSizzleVideo from '../assets/videos/monks-hero-sizzle.mp4';
 
+import portraitOne from '../assets/images/iwon_portrait_one_1795418326271.jpg';
+import portraitTwo from '../assets/images/iwon_portrait_two_1795418326428.jpg';
+import portraitThree from '../assets/images/iwon_portrait_three_1795418326521.jpg';
+import portraitFour from '../assets/images/iwon_portrait_four_1795418326945.jpg';
+import portraitFive from '../assets/images/iwon_portrait_five_1795418325991.jpg';
+
 export const VIDEO_ASSETS = {
   heroSizzle: {
     localUrl: heroSizzleVideo,
@@ -66,7 +72,7 @@ export const HEADER_NAV: NavCategory[] = [
         href: '#solutions',
       },
       {
-        label: 'Monks.Flow',
+        label: 'IWON- Flow',
         description: 'Always-on agents for last-mile marketing intelligence.',
         href: '#agents',
       },
@@ -164,7 +170,7 @@ export const SOLUTIONS_DATA: SolutionCardData[] = [
     title: 'Real-Time Brands',
     description: 'Brands built as living systems to move at the speed of culture',
     image: realtimeBrandsImg,
-    alt: 'DJ Mustard collaboration with Heinz featuring bold yellow mustard lettering',
+    alt: 'Bold mustard yellow typographic brand collaboration showcase',
     offsetDown: false,
     pillars: ['Cultural Intelligence', 'Living Design Systems', 'Creator & Social Velocity'],
     outcome: 'Move from quarterly campaign calendars to real-time cultural participation.',
@@ -175,7 +181,7 @@ export const SOLUTIONS_DATA: SolutionCardData[] = [
     title: 'Media Acceleration',
     description: 'Unifying intelligence, content, media, and measurement into one performance system',
     image: mediaAccelerationImg,
-    alt: 'Multiple Hatch digital campaign variations dynamically arranged across screens',
+    alt: 'Multiple dynamic digital campaign variations arranged across screens',
     offsetDown: true,
     pillars: ['Full-Funnel Attribution', 'Dynamic Creative Optimization', 'Retail & Programmatic Media'],
     outcome: 'Eliminate silos between creative resonance and measurable media performance.',
@@ -186,9 +192,9 @@ export const SOLUTIONS_DATA: SolutionCardData[] = [
     title: 'Marketing Orchestration',
     description: 'We collapse your content supply chain into one AI-powered system',
     image: marketingOrchestrationImg,
-    alt: 'Monks.Flow marketing orchestration interface showing connected workflow modules',
+    alt: 'IWON- Flow marketing orchestration interface showing connected workflow modules',
     offsetDown: false,
-    pillars: ['Monks.Flow Workflows', 'Automated Localization', 'Global Studio Operations'],
+    pillars: ['IWON- Flow Workflows', 'Automated Localization', 'Global Studio Operations'],
     outcome: 'Produce, adapt, and deploy omnichannel assets faster with human-led craft.',
   },
   {
@@ -254,7 +260,7 @@ export const EXPERTISE_DATA: ExpertiseItem[] = [
     tag: 'Content',
     title: 'CES 2026: From Vision to Velocity',
     image: ces2026Img,
-    alt: 'Monks leadership panel speaking on stage at CES Foundry C Space',
+    alt: 'IWON- leadership panel speaking on stage at CES Foundry C Space',
     colSpanClass: 'lg:col-span-4',
     aspectClass: 'aspect-[645/600]',
     summary:
@@ -352,7 +358,7 @@ export const INSIGHTS_DATA: InsightItem[] = [
     id: 'mmm-meta-analysis-tiktok',
     type: 'Blog Post',
     titleBold: 'Smarter Investments for an Evolving Marketing Landscape:',
-    titleRegular: 'MMM Meta-Analysis with Monks and TikTok',
+    titleRegular: 'MMM Meta-Analysis with IWON- and TikTok',
     readTime: '7 min read',
     summary:
       'Cross-industry Marketing Mix Modeling findings revealing how short-form video creative freshness directly amplifies upper- and lower-funnel ROI.',
@@ -364,88 +370,90 @@ export const INSIGHTS_DATA: InsightItem[] = [
   },
 ];
 
-export interface ContactStep {
-  id: string;
-  name: string;
-  label: string;
-  type: 'text' | 'email' | 'textarea' | 'radio';
-  required: boolean;
-  placeholder: string;
-  options?: string[];
-}
+export const IWON_TEAM_PORTRAITS = [
+  {
+    id: 'director',
+    src: portraitOne,
+    alt: 'IWON- Creative Director',
+    initials: 'CD',
+    ring: 'outer',
+    positionClass: 'top-[4%] left-[52%] -translate-x-1/2',
+    sizeClass: 'w-12 h-12 sm:w-14 sm:h-14',
+  },
+  {
+    id: 'architect',
+    src: portraitTwo,
+    alt: 'IWON- AI Solutions Architect',
+    initials: 'AI',
+    ring: 'outer',
+    positionClass: 'top-[28%] right-[3%]',
+    sizeClass: 'w-11 h-11 sm:w-13 sm:h-13',
+  },
+  {
+    id: 'strategist',
+    src: portraitThree,
+    alt: 'IWON- Brand Strategist',
+    initials: 'BS',
+    ring: 'middle',
+    positionClass: 'bottom-[12%] right-[12%]',
+    sizeClass: 'w-12 h-12 sm:w-14 sm:h-14',
+  },
+  {
+    id: 'designer',
+    src: portraitFour,
+    alt: 'IWON- Principal Product Designer',
+    initials: 'PD',
+    ring: 'outer',
+    positionClass: 'bottom-[10%] left-[10%]',
+    sizeClass: 'w-11 h-11 sm:w-13 sm:h-13',
+  },
+  {
+    id: 'producer',
+    src: portraitFive,
+    alt: 'IWON- Executive Producer',
+    initials: 'EP',
+    ring: 'middle',
+    positionClass: 'top-[24%] left-[4%]',
+    sizeClass: 'w-12 h-12 sm:w-14 sm:h-14',
+  },
+];
 
-export const CONTACT_STEPS: ContactStep[] = [
-  {
-    id: 'firstname',
-    name: 'firstname',
-    label: 'First Name*',
-    type: 'text',
-    required: true,
-    placeholder: 'First Name*',
-  },
-  {
-    id: 'lastname',
-    name: 'lastname',
-    label: 'Last Name*',
-    type: 'text',
-    required: true,
-    placeholder: 'Last Name*',
-  },
-  {
-    id: 'company',
-    name: 'company',
-    label: 'Company*',
-    type: 'text',
-    required: true,
-    placeholder: 'Company*',
-  },
-  {
-    id: 'jobtitle',
-    name: 'jobtitle',
-    label: 'Job Title*',
-    type: 'text',
-    required: true,
-    placeholder: 'Job Title*',
-  },
-  {
-    id: 'email',
-    name: 'email',
-    label: 'Work Email*',
-    type: 'email',
-    required: true,
-    placeholder: 'Work Email*',
-  },
-  {
-    id: 'message_general',
-    name: 'message_general',
-    label: 'How can we help you?',
-    type: 'textarea',
-    required: false,
-    placeholder: 'Tell us about your project or goals (optional)',
-  },
-  {
-    id: 'declared_region',
-    name: 'declared_region',
-    label: 'Select a Region*',
-    type: 'radio',
-    required: true,
-    placeholder: 'Select a Region*',
-    options: [
-      'North America',
-      'Latin America',
-      'Asia Pacific',
-      'Europe, the Middle East, and Africa',
-      'Global',
-    ],
-  },
-  {
-    id: 'how_did_you_discover_media_monks',
-    name: 'how_did_you_discover_media_monks',
-    label: 'How did you discover Monks?*',
-    type: 'textarea',
-    required: true,
-    placeholder: 'How did you discover Monks?*',
-  },
+export const CONTACT_SERVICES = [
+  'Real-Time Brands',
+  'Media Acceleration',
+  'Marketing Orchestration',
+  'AI Transformation',
+  'Technology & Platforms',
+  'Brand & Experience Design',
+];
+
+export const CONTACT_COMPANY_SIZES = [
+  '1–10 employees',
+  '11–50 employees',
+  '51–200 employees',
+  '201–1,000 employees',
+  '1,000+ employees',
+];
+
+export const CONTACT_LOCATIONS = [
+  'North America',
+  'Europe',
+  'United Kingdom',
+  'Asia Pacific',
+  'Latin America',
+  'Middle East & Africa',
+  'Global / Multi-Region',
+];
+
+export const PARTNER_PLACEHOLDER_MARKS = [
+  { id: 'verve', name: 'VERVE LABS', shape: 'circle' as const },
+  { id: 'kinetik', name: 'KINETIK', shape: 'bars' as const },
+  { id: 'strata', name: 'STRATA', shape: 'layers' as const },
+  { id: 'meridian', name: 'MERIDIAN', shape: 'arc' as const },
+  { id: 'valence', name: 'VALENCE', shape: 'diamond' as const },
+  { id: 'monolith', name: 'MONOLITH', shape: 'square' as const },
+  { id: 'pulse', name: 'PULSE GRID', shape: 'dots' as const },
+  { id: 'nordic', name: 'NORDIC CORE', shape: 'ring' as const },
 ];
 
 export const FOOTER_PRIMARY_LINKS = [
@@ -458,7 +466,7 @@ export const FOOTER_PRIMARY_LINKS = [
 ];
 
 export const FOOTER_POLICY_LINKS = [
-  'An S4 Capital Company',
+  'IWON- Global Group',
   'Sustainability',
   'Privacy Notice',
   'Cookie Policy',
