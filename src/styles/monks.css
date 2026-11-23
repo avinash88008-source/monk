@@ -1,0 +1,117 @@
+:root {
+  --monks-canvas: #eae8e4;
+  --monks-ink: #2d2d2d;
+  --monks-ink-muted: #6f6c66;
+  --monks-footer-bg: #191715;
+  --monks-pink: #ffb2e8;
+  --monks-purple-chat: #5b1bff;
+  --monks-badge-bg: #001d38;
+  --monks-badge-fg: #bcffef;
+  --monks-overlay-lilac: #dfbbfe;
+  --monks-overlay-lilac-ink: #3c0c60;
+}
+
+html {
+  background-color: var(--monks-canvas);
+  color: var(--monks-ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--monks-canvas);
+  color: var(--monks-ink);
+  overflow-x: hidden;
+}
+
+.font-monks-sans {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+.font-monks-extended {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.font-monks-serif {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* Signature Monks Twin Pill + Circle Button Interaction */
+.monks-twin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.monks-twin-btn .twin-pill,
+.monks-twin-btn .twin-circle {
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.monks-twin-btn .twin-arrow {
+  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.monks-twin-btn:hover .twin-circle {
+  transform: translateX(4px);
+}
+
+.monks-twin-btn:hover .twin-arrow {
+  transform: translateX(2px);
+}
+
+/* Outlined marquee text for "meet the monk" */
+.monks-marquee-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(45, 45, 45, 0.32);
+  user-select: none;
+}
+
+@keyframes monks-marquee-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-monks-marquee {
+  display: flex;
+  width: max-content;
+  animation: monks-marquee-left 28s linear infinite;
+}
+
+/* Subtle scribble path draw animation */
+@keyframes monks-scribble-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.animate-scroll-hint {
+  animation: monks-scribble-float 2.6s ease-in-out infinite;
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-monks-marquee,
+  .animate-scroll-hint {
+    animation: none !important;
+  }
+  .monks-twin-btn .twin-pill,
+  .monks-twin-btn .twin-circle,
+  .monks-twin-btn .twin-arrow {
+    transition: none !important;
+  }
+}

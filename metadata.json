@@ -1,0 +1,6 @@
+{
+  "name": "Monks — Transforming brands for the real-time world",
+  "description": "Recreation of the Monks digital-first marketing and technology services homepage featuring GSAP ScrollTrigger choreography, Lenis smooth scroll, and interactive video showcases.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
