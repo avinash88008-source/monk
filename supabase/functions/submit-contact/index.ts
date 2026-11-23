@@ -361,8 +361,11 @@ function buildPropertyValue(
       return { email: value };
     case 'rich_text':
       return toNotionRichText(value);
-    case 'select':
-      return { select: { name: value.slice(0, 100) } };
+    case 'select': {
+      // Notion API rejects commas in select option names
+      const safeOption = value.replace(/,/g, '').trim().slice(0, 100);
+      return { select: { name: safeOption } };
+    }
     case 'status': {
       const options = schema.status?.options ?? [];
       const exactOption = options.find(
@@ -372,8 +375,10 @@ function buildPropertyValue(
     }
     case 'date':
       return { date: { start: value } };
-    case 'multi_select':
-      return { multi_select: [{ name: value.slice(0, 100) }] };
+    case 'multi_select': {
+      const safeOption = value.replace(/,/g, '').trim().slice(0, 100);
+      return { multi_select: [{ name: safeOption }] };
+    }
     case 'created_time':
       // Notion populates created_time automatically and rejects writes to it
       return null;
